@@ -2,7 +2,8 @@
 //  ✏️  TEXTOS PERSONALIZADOS: cambia aquí lo que se lee en las tarjetas
 // ============================================================
 // Se muestra al hacer clic en el CORAZÓN. Usa \n para saltos de línea.
-const MENSAJE_CORAZON = "Este corazón late por ti.\nSi hoy todo va muy rápido, ven y abrázame hasta que baje el ritmo.";
+const MENSAJE_CORAZON = "Te quiero mucho mi niñita
+  añañaññaña.";
 // Se muestra al hacer clic en el CEREBRO.
 const MENSAJE_CEREBRO = "Respira hondo. Tu cabeza no tiene que resolverlo todo hoy.\nYo me encargo de que te rías un rato.";
 // Títulos de las tarjetas (opcional)
