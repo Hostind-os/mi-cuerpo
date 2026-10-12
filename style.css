@@ -1,0 +1,37 @@
+:root{--bg:radial-gradient(ellipse at 50% 38%,#4a2735 0%,#3a202a 42%,#2b1b22 78%,#1f1319 100%);--ink:#fff1ec;--muted:#e8c6d1;--card:rgba(255,226,236,.1);--line:rgba(255,196,214,.3);--accent:#ff7aa2;--accent2:#ffb8cb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{height:100%;background:#2b1b22}
+body{height:100%;margin:0;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);color:var(--ink);font-family:Poppins,system-ui,sans-serif}
+[hidden]{display:none!important}
+header{text-align:center;padding:clamp(14px,3.2vh,30px) 16px 0;z-index:2}
+h1{margin:0;font:600 clamp(1.55rem,4.8vw,2.9rem)/1.15 'Playfair Display',Georgia,serif;letter-spacing:.01em;text-shadow:0 2px 28px rgba(255,140,175,.38)}
+.sub{margin:8px auto 0;max-width:34em;font-size:.82rem;font-weight:300;line-height:1.5;color:var(--muted)}
+#stage{position:relative;flex:1;min-height:0}
+#c{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#c:active{cursor:grabbing}
+#dock{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:min(560px,calc(100% - 24px));display:flex;flex-direction:column;align-items:center;gap:10px;z-index:2}
+#chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+#chips button{display:flex;align-items:center;gap:8px;font:400 .8rem Poppins,system-ui,sans-serif;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 15px;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:background .25s,color .25s,border-color .25s}
+#chips button[aria-pressed=true]{color:var(--ink);background:rgba(255,122,162,.26);border-color:var(--accent)}
+#chips i{width:9px;height:9px;border-radius:50%;background:var(--d);box-shadow:0 0 9px var(--d);opacity:.4}
+#chips button[aria-pressed=true] i{opacity:1}
+#msgbar{display:flex;width:100%;gap:8px;padding:6px;border-radius:999px;background:rgba(58,32,42,.78);border:1px solid var(--line);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+#msg{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:300 .95rem Poppins,system-ui,sans-serif;padding:8px 14px}
+#msg::placeholder{color:var(--muted);opacity:.7}
+#msg:focus{outline:none}
+#msgbar:focus-within{border-color:var(--accent)}
+#send{border:0;border-radius:999px;padding:9px 20px;font:400 .9rem Poppins,system-ui,sans-serif;color:#2b1b22;background:linear-gradient(135deg,#ffb8cb,#ff7aa2);cursor:pointer}
+#send:disabled{opacity:.55;cursor:wait}
+#chips button:focus-visible,#send:focus-visible,#mx:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+#status{margin:0;min-height:1.2em;font-size:.8rem;color:var(--accent2)}
+#status.err{color:#ffd0c4}
+#hearts{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:4}
+#hearts span{position:absolute;bottom:70px;left:var(--x);font-size:var(--s);color:var(--c);opacity:0;animation:up var(--t) ease-out var(--d) forwards;text-shadow:0 0 12px currentColor}
+@keyframes up{0%{transform:translateY(0) scale(.5);opacity:0}15%{opacity:1}100%{transform:translate(var(--w),-72vh) scale(1.15);opacity:0}}
+#modal{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(31,19,25,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s}
+#modal.on{opacity:1}
+.mcard{width:min(440px,100%);padding:28px 28px 22px;border-radius:22px;background:rgba(72,36,52,.92);border:1px solid var(--line);box-shadow:0 18px 60px rgba(255,100,150,.3);transform:translateY(14px) scale(.94);transition:transform .45s cubic-bezier(.2,1.4,.4,1)}
+#modal.on .mcard{transform:none}
+.mcard h2{margin:0 0 10px;font:600 1.5rem 'Playfair Display',Georgia,serif;color:var(--accent2)}
+.mcard p{margin:0 0 20px;font-weight:300;font-size:1rem;line-height:1.75;white-space:pre-line}
+#mx{display:block;margin-left:auto;border:1px solid var(--line);border-radius:999px;padding:8px 20px;background:var(--card);color:var(--ink);font:400 .85rem Poppins,system-ui,sans-serif;cursor:pointer}
+@media (prefers-reduced-motion:reduce){#hearts span{animation-duration:1.6s}.mcard{transition:none}}
