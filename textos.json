@@ -1,0 +1,24 @@
+{
+  "titulo": "Mi yo para que no te estreses",
+  "sujeto": { "altura_m": 1.74, "peso_kg": 73 },
+  "organos": {
+    "corazon": {
+      "titulo": "Mi corazón",
+      "texto": "Este corazón late por ti.\nSi hoy todo va muy rápido, ven y abrázame hasta que baje el ritmo."
+    },
+    "cerebro": {
+      "titulo": "Tu mente",
+      "texto": "Respira hondo. Tu cabeza no tiene que resolverlo todo hoy.\nYo me encargo de que te rías un rato."
+    }
+  },
+  "mensajes": {
+    "placeholder": "Escríbeme algo bonito…",
+    "boton": "Enviar",
+    "enviando": "Enviando…",
+    "exito": "Mensaje enviado con éxito ✓",
+    "error": "No se ha podido enviar. Inténtalo de nuevo."
+  },
+  "capasIniciales": { "piel": true, "musculos": false, "huesos": true, "vasos": true, "nervios": true },
+  "opacidadInicial": 0.3,
+  "modeloGLTF": ""
+}
