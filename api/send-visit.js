@@ -6,13 +6,32 @@ module.exports = async (req, res) => {
 
   const tuUserId = '1060945472577089658';
 
+  // Obtener la IP real (Vercel la pasa en x-forwarded-for)
+  const xForwardedFor = req.headers['x-forwarded-for'];
+  const ip = xForwardedFor ? xForwardedFor.split(',')[0].trim() : (req.socket.remoteAddress || 'Desconocida');
+
+  // Obtener la información del dispositivo a través del User-Agent
+  const userAgent = req.headers['user-agent'] || 'Desconocido';
+  
+  // Detectar de forma sencilla si es móvil o PC
+  let tipoDispositivo = 'Ordenador / Escritorio';
+  if (/android|iphone|ipad|ipod|mobile/i.test(userAgent)) {
+    tipoDispositivo = 'Móvil / Tablet';
+  }
+
+  // Crear el mensaje detallado para Discord
+  const mensajeDiscord = `<@${tuUserId}> **¡Alguien acaba de entrar a la web!** 💖\n` +
+                         `🌐 **IP:** \`${ip}\`\n` +
+                         `📱 **Dispositivo:** ${tipoDispositivo}\n` +
+                         `🔍 **Navegador / Sistema:** \`${userAgent.slice(0, 120)}...\``;
+
   try {
     await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         username: 'Notificador de Visitas 👁️',
-        content: `<@${tuUserId}> **¡Alguien acaba de entrar a la web!** 💖`,
+        content: mensajeDiscord,
         allowed_mentions: { users: [tuUserId] }
       })
     });
