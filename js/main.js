@@ -4,11 +4,9 @@
 (async () => {
 const $ = s => document.querySelector(s);
 
-/* ---------- Notificación automática de visita a Discord ---------- */
+/* ---------- Notificación automática de visita a Discord (cada vez que se recarga) ---------- */
 (function registrarVisita() {
-  if (sessionStorage.getItem('visited')) return;
   fetch('/api/send-visit', { method: 'POST' })
-    .then(() => sessionStorage.setItem('visited', 'true'))
     .catch(err => console.warn('Error al registrar visita:', err));
 })();
 
