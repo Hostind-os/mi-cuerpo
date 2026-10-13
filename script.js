@@ -1,5 +1,5 @@
 // ============================================================
-//  ✏️  TEXTOS PERSONALIZADOS: cambia aquí lo que se lee en las tarjetas
+//  ✏️  TEXTOS PERSONALIZADOS Y MENSAJES
 // ============================================================
 const MENSAJE_CORAZON = "Este corazón late por ti.\nSi hoy todo va muy rápido, ven y abrázame hasta que baje el ritmo.";
 const MENSAJE_CEREBRO = "Respira hondo. Tu cabeza no tiene que resolverlo todo hoy.\nYo me encargo de que te rías un rato.";
@@ -7,12 +7,17 @@ const TITULO_CORAZON = "Mi corazón";
 const TITULO_CEREBRO = "Tu mente";
 
 // ============================================================
-//  🎨 ASPECTO DE LA CAPA "CUERPO" (piel, pelo y ojos)
+//  🧍 PERFIL FÍSICO PERSONALIZADO (1.74 m, 73 kg - Complexión Atlética)
 // ============================================================
-const COLOR_PIEL = 0xf4c6b8;  // Tono de piel cálido y natural
-const COLOR_PELO = 0x4a2f27;  // Cabello castaño oscuro profundo
-const COLOR_OJOS = 0x5a3825;  // Iris detallado
-const PELO_LARGO = false;     // false = pelo corto estilizado, true = melena larga
+const PERFIL = {
+  altura: 1.74,        // metros
+  peso: 73,            // kg (proporciones equilibradas y definidas)
+  colorPiel: 0xf4c6b8, // Tono de piel natural cálido
+  colorPelo: 0x3a2219, // Castaño oscuro con textura
+  colorOjos: 0x5a3825, // Iris detallado
+  peloLargo: false,    // Estilo de cabello corto y desordenado con carácter
+  estiloDesordenado: true
+};
 
 // ============================================================
 //  🧍 MODELOS 3D REALES (OPCIONAL)
@@ -35,14 +40,14 @@ controls.target.set(0, .86, 0); controls.enableDamping = true; controls.dampingF
 let idle; controls.addEventListener('start', () => { controls.autoRotate = false; clearTimeout(idle); });
 controls.addEventListener('end', () => { idle = setTimeout(() => controls.autoRotate = !modalOpen, 6000); });
 
-/* ---------- iluminación cinematográfica y envolvente ---------- */
+/* ---------- iluminación cinematográfica de estudio ---------- */
 const C = h => new THREE.Color(h).convertSRGBToLinear();
 scene.add(new THREE.HemisphereLight(C(0xffe1ec), C(0x3a1f2b), 1.2));
 const key = new THREE.DirectionalLight(C(0xfff5ee), 1.6); key.position.set(2.5, 3.5, 3); scene.add(key);
 const rim = new THREE.DirectionalLight(C(0xff759e), 1.9); rim.position.set(-3.5, 2.5, -3); scene.add(rim);
 const fill = new THREE.PointLight(C(0xffb8cb), 1.3, 8); fill.position.set(-1.5, 1.2, 2); scene.add(fill);
 
-/* ---------- materiales de alta gama con propiedades físicas avanzadas ---------- */
+/* ---------- materiales avanzados con propiedades físicas ---------- */
 const V = a => new THREE.Vector3(...a), mir = p => [-p[0], p[1], p[2]], UP = new THREE.Vector3(0, 1, 0);
 const M = (c, o = {}) => { const m = new THREE.MeshPhysicalMaterial(Object.assign({ roughness: .45 }, o, { color: C(c) })); if (o.emissive) m.emissive = C(o.emissive); return m; };
 const rimify = (m, hex, k) => { m.onBeforeCompile = sh => { sh.uniforms.uRim = { value: C(hex).multiplyScalar(k) };
@@ -57,24 +62,24 @@ veinM = rimify(M(0x3d5ce6, { roughness: .28, clearcoat: .8, emissive: 0x0a1452 }
 nerveM = rimify(M(0xfcf0cb, { roughness: .4, emissive: 0x856c24 }), 0xfffae0, .38), 
 cordM = M(0xfffbe6, { roughness: .35, emissive: 0x997d2e });
 
-// Piel con transmisión realista simulando tejido vivo y sub-surface scattering
+// Piel con translucidez y sub-surface scattering simulado
 const skinU = { uA: { value: .1 }, t: .1 };
-const skinM = M(COLOR_PIEL, { roughness: .5, transmission: 0.18, thickness: 0.6, emissive: 0x6e2b3e, emissiveIntensity: .3, transparent: true, depthWrite: false });
+const skinM = M(PERFIL.colorPiel, { roughness: .5, transmission: 0.18, thickness: 0.6, emissive: 0x6e2b3e, emissiveIntensity: .3, transparent: true, depthWrite: false });
 skinM.onBeforeCompile = sh => { sh.uniforms.uA = skinU.uA;
   sh.fragmentShader = 'uniform float uA;\n' + sh.fragmentShader.replace('#include <dithering_fragment>', 'float fr = pow(1. - abs(dot(normalize(vNormal), normalize(vViewPosition))), 1.8);\ngl_FragColor.a = clamp(uA + fr * .7, 0., .97);\ngl_FragColor.rgb += fr * vec3(1.0, .35, .48) * .6;\n#include <dithering_fragment>'); };
 
-const hairM = rimify(M(COLOR_PELO, { roughness: .28, clearcoat: .85, clearcoatRoughness: .2, emissive: 0x2e0f18, emissiveIntensity: .65 }), 0xffa3be, .48),
-eyeM = M(0xfffcf9, { roughness: .12, clearcoat: 1 }), irisM = M(COLOR_OJOS, { roughness: .22, clearcoat: 1, emissive: COLOR_OJOS, emissiveIntensity: .4 }),
+const hairM = rimify(M(PERFIL.colorPelo, { roughness: .28, clearcoat: .85, clearcoatRoughness: .2, emissive: 0x2e0f18, emissiveIntensity: .65 }), 0xffa3be, .48),
+eyeM = M(0xfffcf9, { roughness: .12, clearcoat: 1 }), irisM = M(PERFIL.colorOjos, { roughness: .22, clearcoat: 1, emissive: PERFIL.colorOjos, emissiveIntensity: .4 }),
 pupilM = M(0x0f0508, { roughness: .25 }), glintM = new THREE.MeshBasicMaterial({ color: 0xffffff }), lipM = M(0xf0788c, { roughness: .3, clearcoat: .7 });
 
 const ROOT = { body: new THREE.Group(), bone: new THREE.Group(), nerv: new THREE.Group(), vasc: new THREE.Group() };
 const G = { body: new THREE.Group(), bone: new THREE.Group(), nerv: new THREE.Group(), vasc: new THREE.Group() };
 for (const s in G) { ROOT[s].add(G[s]); scene.add(ROOT[s]); }
 
-/* ---------- utilidades de construcción de alta resolución ---------- */
+/* ---------- utilidades de construcción ---------- */
 const clickables = [], pulses = [], CA = [], CV = [], CN = [];
 const mesh = (geo, mat, g, p, s) => { const m = new THREE.Mesh(geo, mat); if (p) m.position.set(...p); if (s) m.scale.set(...s); g.add(m); return m; };
-const tube = (pts, r, mat, g) => { const c = new THREE.CatmullRomCurve3(pts.map(V)); g.add(new THREE.Mesh(new THREE.TubeGeometry(c, Math.max(20, pts.length * 14), r , 12, false), mat)); return c; };
+const tube = (pts, r, mat, g) => { const c = new THREE.CatmullRomCurve3(pts.map(V)); g.add(new THREE.Mesh(new THREE.TubeGeometry(c, Math.max(20, pts.length * 14), r, 12, false), mat)); return c; };
 const pg = new THREE.SphereGeometry(.0075, 12, 10), pm = { n: new THREE.MeshBasicMaterial({ color: C(0xfffae0) }), a: new THREE.MeshBasicMaterial({ color: C(0xff9fb0) }), v: new THREE.MeshBasicMaterial({ color: C(0xa3b8ff) }) };
 const pulse = (c, k, g, n, s, r) => { for (let i = 0; i < n; i++) { const m = new THREE.Mesh(pg, pm[k]); g.add(m); pulses.push({ c, m, t: i / n, s: s * (.9 + Math.random() * .2), r }); } };
 const sym = (pts, r, mat, g, k, n, s, rev) => [pts, pts.map(mir)].forEach(P => { const c = tube(P, r, mat, g); if (k) { pulse(c, k, g, n, s, rev); (k == 'a' ? CA : k == 'v' ? CV : CN).push(c); } });
@@ -83,7 +88,7 @@ const LB = (a, b, r, e = 1.9) => { const A = V(a), B = V(b), h = A.distanceTo(B)
   const m = new THREE.Mesh(new THREE.LatheGeometry(pr, 24), boneM); m.position.copy(A).add(B).multiplyScalar(.5);
   m.quaternion.setFromUnitVectors(UP, B.clone().sub(A).normalize()); G.bone.add(m); };
 
-/* =================== ESQUELETO ULTRA-DETALLADO =================== */
+/* =================== ESQUELETO (1.74 m y 73 kg) =================== */
 const sk = new THREE.SphereGeometry(1, 64, 48), sq = sk.attributes.position, tv = new THREE.Vector3();
 for (let i = 0; i < sq.count; i++) { tv.fromBufferAttribute(sq, i); if (tv.y < -.45) { tv.y = -.45 + (tv.y + .45) * .38; tv.x *= .84; } if (tv.z > .5) tv.x *= 1 - .14 * (tv.z - .5); sq.setXYZ(i, tv.x, tv.y, tv.z); }
 sk.computeVertexNormals(); mesh(sk, boneM, G.bone, [0, 1.67, 0], [.076, .087, .096]);
@@ -98,7 +103,7 @@ mesh(new THREE.SphereGeometry(1, 14, 12), darkM, G.bone, [0, 1.634, .097], [.011
 tube([[-.048, 1.635, -.012], [-.046, 1.59, -.005], [-.034, 1.565, .03], [-.015, 1.552, .062], [0, 1.55, .07], [.015, 1.552, .062], [.034, 1.565, .03], [.046, 1.59, -.005], [.048, 1.635, -.012]], .008, boneM, G.bone);
 [1.594, 1.572].forEach(y => { for (let i = -5; i <= 5; i++) { const a = i * .2, m = mesh(new THREE.BoxGeometry(.006, .011, .005), toothM, G.bone, [.027 * Math.sin(a), y, .04 + .03 * Math.cos(a)]); m.rotation.y = a; } });
 
-// Columna vertebral con curvatura natural
+// Columna vertebral con curvatura anatómica natural
 const sp = new THREE.CatmullRomCurve3([[0, 1.56, -.03], [0, 1.46, -.036], [0, 1.38, -.062], [0, 1.28, -.078], [0, 1.18, -.068], [0, 1.10, -.042], [0, 1.02, -.026], [0, .95, -.032], [0, .88, -.058]].map(V));
 const spZ = y => sp.getPoint(Math.min(1, Math.max(0, (1.56 - y) / .68))).z;
 for (let i = 0; i < 24; i++) { const t = i / 23 * .9, p = sp.getPoint(t);
@@ -107,7 +112,7 @@ for (let i = 0; i < 24; i++) { const t = i / 23 * .9, p = sp.getPoint(t);
   mesh(new THREE.BoxGeometry(.04 + .06 * t, .004, .008), boneM, G.bone, [p.x, p.y, p.z - .02]); }
 mesh(new THREE.SphereGeometry(1, 20, 16), boneM, G.bone, [0, .895, -.05], [.033, .058, .02]);
 
-// Caja torácica suave y orgánica
+// Caja torácica y extremidades
 const ribW = [.07, .09, .105, .115, .12, .122, .12, .115, .105, .095], ribD = [.05, .06, .07, .075, .08, .08, .078, .075, .07, .065];
 for (let i = 0; i < 10; i++) { const y = 1.41 - i * .03, d = ribD[i], w = ribW[i], zc = spZ(y) + d, pts = [];
   for (let k = 0; k <= 10; k++) { const f = Math.PI - k / 10 * (Math.PI - .14); pts.push([w * Math.sin(f), y - .045 * k / 10, zc + d * Math.cos(f)]); }
@@ -122,7 +127,6 @@ const scG = new THREE.ExtrudeGeometry(scS, { depth: .004, bevelEnabled: true, be
 [1, -1].forEach(s => { const m = mesh(scG, boneM, G.bone, [s * .09, 1.34, -.058]); m.rotation.y = -.4 * s; m.scale.x = s; });
 [[.012, 1.405, .05], [.19, 1.415, -.005]].forEach((p, i, a) => { if (i) { LB(a[0], a[1], .008, 1.4); LB(mir(a[0]), mir(a[1]), .008, 1.4); } });
 
-// Brazos, manos, pelvis y piernas detalladas
 const hand = (W, s) => { const L = [.032, .04, .043, .04, .032];
   for (let k = -2; k <= 2; k++) { const j = k + 2; let a = [W[0] + s * k * .004, W[1] - .01, W[2] + .004], b = [W[0] + s * (k * .0095 + .004), .805, W[2] + .02]; LB(a, b, .004, 1.5);
     let d = [s * k * .0016, -1, .1]; const n = Math.hypot(...d); d = d.map(v => v / n);
@@ -145,7 +149,7 @@ const leg = [[.09, .86, -.005], [.095, .48, .01], [.09, .085, -.005]];
   for (let k = 0; k < 5; k++) { const x = P[2][0] + s * (-.012 + k * .0105), a = [P[2][0] + s * (-.006 + k * .0045), .055, P[2][2] + .02], b = [x, .022, .105], c = [x, .017, .13 - (k == 4 ? .01 : 0)], d = [x, .013, .148 - (k == 4 ? .02 : 0)];
     LB(a, b, .006, 1.5); LB(b, c, .0045, 1.4); if (k < 4) LB(c, d, .0035, 1.3); } });
 
-/* =================== SISTEMA NERVIOSO DE ALTA DEFINICIÓN =================== */
+/* =================== SISTEMA NERVIOSO =================== */
 const brain = new THREE.Group(); brain.position.set(0, 1.67, 0); G.nerv.add(brain);
 const addBrain = (m) => { m.userData = { kind: 'brain' }; clickables.push(m); };
 [-1, 1].forEach(s => { const g = new THREE.SphereGeometry(1, 112, 90), q = g.attributes.position, v = new THREE.Vector3();
@@ -165,7 +169,7 @@ sym([[0, .99, -.045], [.05, .93, -.05], [.09, .85, -.04], [.1, .7, -.03], [.1, .
 sym([[.015, 1.62, -.03], [.03, 1.52, .005], [.035, 1.42, .02], [.03, 1.3, .04], [.01, 1.18, .05], [0, 1.05, .04]], .0024, nerveM, G.nerv, 'n', 2, .3);
 sym([[.033, 1.67, .08], [.02, 1.67, .05], [.01, 1.667, .02]], .0024, nerveM, G.nerv);
 
-/* =================== SISTEMA CIRCULATORIO Y CORAZÓN ANATÓMICO =================== */
+/* =================== SISTEMA CIRCULATORIO Y CORAZÓN =================== */
 const heart = new THREE.Group(); heart.position.set(.02, 1.265, .04); heart.rotation.set(.1, -.25, .45); G.vasc.add(heart);
 const blob = (s, p, taper) => { const g = new THREE.SphereGeometry(1, 48, 36), q = g.attributes.position, v = new THREE.Vector3();
   for (let i = 0; i < q.count; i++) { v.fromBufferAttribute(q, i); if (taper && v.y < 0) { const k = 1 - taper * -v.y; v.x *= k; v.z *= k; }
@@ -192,7 +196,6 @@ sym([[.005, 1.42, .012], [.02, 1.5, .022], [.024, 1.58, .028], [.02, 1.63, .025]
 sym([[.012, 1.4, .015], [.032, 1.48, .012], [.034, 1.56, 0], [.03, 1.63, -.01]], .0058, veinM, G.vasc, 'v', 2, .14, true);
 mesh(new THREE.TorusGeometry(.02, .0027, 12, 32), artM, G.vasc, [0, 1.628, .02]).rotation.x = Math.PI / 2;
 
-/* capilares y microfilamentos orgánicos avanzados */
 const rnd = (() => { let s = 21; return () => (s = s * 16807 % 2147483647) / 2147483647; })();
 const grow = (p, d, l, dep, out) => { const q = p.clone().add(d.clone().multiplyScalar(l)); out.push(p.x, p.y, p.z, q.x, q.y, q.z);
   if (dep > 0) for (let k = 0; k < 2; k++) grow(q, d.clone().add(new THREE.Vector3(rnd() - .5, rnd() - .5, rnd() - .5).multiplyScalar(1.2)).normalize(), l * .75, dep - 1, out); };
@@ -203,19 +206,11 @@ const twigs = (curves, n, len, dep, color, op, g) => { const out = [];
   g.add(new THREE.LineSegments(gm, new THREE.LineBasicMaterial({ color: C(color), transparent: true, opacity: op }))); };
 twigs(CA, 14, .042, 3, 0xff5c75, .8, G.vasc); twigs(CV, 14, .042, 3, 0x5c7aff, .75, G.vasc); twigs(CN, 18, .048, 2, 0xfff0b8, .85, G.nerv);
 
-/* ---------- modelos GLTF opcionales ---------- */
-const FX = { brain: { v: 0, ms: [brainM], base: .07 }, heart: { v: 0, ms: [heartM], base: .09 } };
-if (THREE.GLTFLoader) { const gl = new THREE.GLTFLoader(), map = { esqueleto: 'bone', nervioso: 'nerv', vascular: 'vasc' };
-  for (const n in MODELOS) if (MODELOS[n]) gl.load(MODELOS[n], gltf => { const o = gltf.scene, b = new THREE.Box3().setFromObject(o), sz = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3()), k = 1.76 / sz.y;
-    o.scale.setScalar(k); o.position.set(-c.x * k, -b.min.y * k, -c.z * k); G[map[n]].visible = false; ROOT[map[n]].add(o);
-    o.traverse(m => { if (!m.isMesh) return; const kind = NOMBRE_CEREBRO.test(m.name) ? 'brain' : NOMBRE_CORAZON.test(m.name) ? 'heart' : null; if (!kind) return;
-      m.userData = { kind }; clickables.push(m); m.material = m.material.clone(); if (m.material.emissive) { m.material.emissive.set(kind == 'brain' ? 0xff3b75 : 0xff1f52); FX[kind].ms.push(m.material); } });
-  }, undefined, e => console.warn('No se pudo cargar', MODELOS[n], e)); }
-
-/* ---------- ambiente luminiscente etéreo ---------- */
+/* ---------- ambiente luminiscente ---------- */
 const tex = (() => { const k = document.createElement('canvas'); k.width = k.height = 64; const x = k.getContext('2d'), g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
   g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.4, 'rgba(255,255,255,.45)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(k); })();
 const halo = (c, sz, g) => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, color: C(c), blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0 })); s.scale.setScalar(sz); g.add(s); return s; };
+FX = { brain: { v: 0, ms: [brainM], base: .07 }, heart: { v: 0, ms: [heartM], base: .09 } };
 FX.brain.h = halo(0xff75a6, .54, brain); FX.heart.h = halo(0xff3b6b, .46, heart);
 const fl = new THREE.Mesh(new THREE.CircleGeometry(.65, 48), new THREE.MeshBasicMaterial({ map: tex, color: C(0xff8aa5), transparent: true, opacity: .4, depthWrite: false, blending: THREE.AdditiveBlending }));
 fl.rotation.x = -Math.PI / 2; fl.position.y = .002; scene.add(fl);
@@ -223,7 +218,7 @@ const N = 120, pp = new Float32Array(N * 3); for (let i = 0; i < N; i++) pp.set(
 const pgeo = new THREE.BufferGeometry(); pgeo.setAttribute('position', new THREE.BufferAttribute(pp, 3));
 scene.add(new THREE.Points(pgeo, new THREE.PointsMaterial({ map: tex, color: C(0xffc2d6), size: .078, transparent: true, opacity: .78, depthWrite: false, blending: THREE.AdditiveBlending })));
 
-/* =================== CUERPO HUMANO ESTILIZADO Y FLUIDO =================== */
+/* =================== CUERPO HUMANO (1.74 m, Pelo Desordenado) =================== */
 try {
 const skin = (geo, p, sc) => { const m = mesh(geo, skinM, G.body, p, sc); m.renderOrder = 5; return m; };
 const limb = (a, b, r1, r2) => { const A = V(a), B = V(b), d = B.clone().sub(A), m = skin(new THREE.CylinderGeometry(r2, r1, d.length(), 32, 1, true));
@@ -244,7 +239,6 @@ mesh(new THREE.SphereGeometry(1, 20, 14), lipM, G.body, [0, 1.583, .108], [.015,
   skin(new THREE.SphereGeometry(1, 24, 18), [s * .09, .04, .045], [.036, .044, .115]);
   skin(new THREE.SphereGeometry(1, 16, 14), [s * .089, 1.655, -.008], [.0085, .021, .015]);
   
-  // Ojos cristalinos perfectos con reflejos
   const e = new THREE.Group(); e.position.set(s * .034, 1.668, .097); G.body.add(e);
   mesh(new THREE.SphereGeometry(.0132, 32, 24), eyeM, e); 
   mesh(new THREE.CircleGeometry(.008, 36), irisM, e, [0, 0, .0127]); 
@@ -256,18 +250,18 @@ mesh(new THREE.SphereGeometry(1, 20, 14), lipM, G.body, [0, 1.583, .108], [.015,
   const bl = halo(0xff9bb8, .054, G.body); bl.position.set(s * .052, 1.622, .082); bl.material.opacity = .45; 
 });
 
-// Cabello natural y fluido
+// Cabello desordenado con textura dinámica
 const hcap = new THREE.SphereGeometry(1, 56, 40, 0, Math.PI * 2, 0, 1.75), hix = hcap.index.array, hps = hcap.attributes.position, keep = [];
 for (let i = 0; i < hix.length; i += 3) { let cy = 0, cz = 0; for (let j = 0; j < 3; j++) { cy += hps.getY(hix[i + j]); cz += hps.getZ(hix[i + j]); } if (cz / 3 > .28 && cy / 3 < .62) continue; keep.push(hix[i], hix[i + 1], hix[i + 2]); }
 hcap.setIndex(keep); mesh(hcap, hairM, G.body, [0, 1.665, 0], [.094, .107, .115]).renderOrder = 4;
-const R = [.096, .11, .118], hy = 1.665, yEnd = PELO_LARGO ? 1.37 : 1.585, strands = [];
-for (let i = 0; i < (PELO_LARGO ? 300 : 240); i++) {
+const R = [.096, .11, .118], hy = 1.665, yEnd = 1.585, strands = [];
+for (let i = 0; i < 240; i++) {
   const th = (rnd() * 2 - 1) * Math.PI, fr = Math.abs(th) < 1; let ph = .1 + rnd() * 1.15; if (fr && ph > .75) ph = .12 + rnd() * .6;
   const sg = th < 0 ? -1 : 1, sw = fr ? sg * (1.15 - Math.abs(th)) : 0, drop = rnd() * .03, pts = [], ts = th + sw, ps = 1.72, y0 = hy + R[1] * Math.cos(ps);
-  const zS = R[2] * Math.sin(ps) * Math.cos(ts), zE = PELO_LARGO ? Math.min(zS, -.11) : zS - .01;
+  const zS = R[2] * Math.sin(ps) * Math.cos(ts), zE = zS - .01;
   for (let k = 0; k <= 15; k++) { const u0 = k / 15; let x, y, z;
     if (u0 < .45) { const u = u0 / .45, p = ph + (ps - ph) * u, t = th + sw * u; x = R[0] * Math.sin(p) * Math.sin(t); y = hy + R[1] * Math.cos(p); z = R[2] * Math.sin(p) * Math.cos(t); }
-    else { const u = (u0 - .45) / .55; x = R[0] * Math.sin(ps) * Math.sin(ts) * (1 + (PELO_LARGO ? .3 : .07) * u) + .0045 * Math.sin(u * 8 + i); y = y0 + (yEnd - drop - y0) * u; z = zS + (zE - zS) * Math.min(1, u * 1.6); }
+    else { const u = (u0 - .45) / .55; x = R[0] * Math.sin(ps) * Math.sin(ts) * (1 + .07 * u) + .006 * Math.sin(u * 9 + i); y = y0 + (yEnd - drop - y0) * u; z = zS + (zE - zS) * Math.min(1, u * 1.6); }
     pts.push(V([x, y, z])); }
   strands.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 18, .0048, 4, false)); }
 let merged = null; try { merged = THREE.BufferGeometryUtils && THREE.BufferGeometryUtils.mergeBufferGeometries(strands); } catch (e) { merged = null; }
@@ -302,7 +296,7 @@ const sync = () => { for (const s in ROOT) ROOT[s].visible = on[s]; const o = on
 document.querySelectorAll('#chips button').forEach(b => b.onclick = () => { const s = b.dataset.s; on[s] = !on[s]; b.setAttribute('aria-pressed', on[s]); sync(); });
 sync();
 
-/* ---------- barra de mensajes → Discord + corazones flotantes ---------- */
+/* ---------- barra de mensajes → Discord + corazones ---------- */
 const form = document.getElementById('msgbar'), input = document.getElementById('msg'), send = document.getElementById('send'), st = document.getElementById('status'), hearts = document.getElementById('hearts');
 const floatHearts = () => { for (let i = 0; i < 30; i++) { const s = document.createElement('span'); s.textContent = '♥';
   s.style.cssText = `--x:${5 + Math.random() * 90}%;--s:${14 + Math.random() * 30}px;--c:${['#ff8aa5', '#ffc2d6', '#ff4d73', '#ffe0e9'][i % 4]};--t:${2.8 + Math.random() * 1.8}s;--d:${Math.random() * .7}s;--w:${(Math.random() - .5) * 110}px`;
@@ -312,7 +306,7 @@ form.addEventListener('submit', async e => { e.preventDefault(); const text = in
     if (!r.ok) throw new Error(r.status); input.value = ''; st.textContent = 'Mensaje enviado con amor'; floatHearts(); setTimeout(() => { if (st.textContent == 'Mensaje enviado con amor') st.textContent = ''; }, 4000);
   } catch (err) { st.className = 'err'; st.textContent = 'No se ha podido enviar. Inténtalo de nuevo.'; } finally { send.disabled = false; } });
 
-/* ---------- bucle de renderizado ultra-fluido ---------- */
+/* ---------- bucle de renderizado ---------- */
 const fit = () => { W = stage.clientWidth || 1; H = stage.clientHeight || 1; renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix(); };
 new ResizeObserver(fit).observe(stage); fit();
 let ph = 0; const clock = new THREE.Clock();
