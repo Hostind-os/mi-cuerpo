@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi yo para que no te estreses</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="caligrafia" aria-hidden="true"><span>pasión</span><span>amor</span><span>siempre</span><span>tuyo</span></div>
+<header>
+  <p id="eyebrow" class="eyebrow">Mi yo para que no te estreses</p>
+  <h1 id="titulo">para cuando te estreses mi niñita</h1>
+  <p id="sujeto" class="sub">(Especialmente para ti, Alicia)</p>
+</header>
+<main id="stage">
+  <canvas id="c" aria-label="Modelo anatómico 3D interactivo"></canvas>
+  <button id="ptoggle" type="button" aria-expanded="false" aria-controls="panel"><span>Layers</span><i aria-hidden="true"></i></button>
+  <aside id="panel" aria-label="Capas">
+    <h3>ALICIA'S COMPANION LAYERS</h3>
+    <button data-l="piel" aria-pressed="true"><i style="--d:#f0a8b8"></i>Skin</button>
+    <button data-l="musculos" aria-pressed="false"><i style="--d:#c0392b"></i>Muscles</button>
+    <button data-l="huesos" aria-pressed="true"><i style="--d:#f4efe6"></i>Bones</button>
+    <button data-l="vasos" aria-pressed="true"><i style="--d:#4a7bff"></i>Vessels</button>
+    <button data-l="nervios" aria-pressed="true"><i style="--d:#f3d878"></i>Nerves</button>
+    <label>Opacidad de piel y músculo<input id="opa" type="range" min="0" max="1" step=".01" value=".9"></label>
+  </aside>
+  <div id="card" role="dialog" aria-live="polite"><div class="box"><button id="cx" type="button" aria-label="Cerrar">&times;</button><h2></h2><p></p></div></div>
+  <div id="dock">
+    <form id="msgbar" autocomplete="off">
+      <input id="msg" type="text" maxlength="500" placeholder="Cuéntame cómo te sientes, Alicia..." aria-label="Mensaje">
+      <button type="submit" id="send">Enviar</button>
+    </form>
+    <p id="status" role="status" aria-live="polite"></p>
+  </div>
+</main>
+<!-- Three.js r128 en este orden; si una CDN falla se carga la de respaldo -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>window.THREE||document.write('<script src="https://unpkg.com/three@0.128.0/build/three.min.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>(window.THREE&&THREE.OrbitControls)||document.write('<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>(window.THREE&&THREE.GLTFLoader)||document.write('<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/BufferGeometryUtils.js"></script>
+<script>(window.THREE&&THREE.BufferGeometryUtils)||document.write('<script src="https://unpkg.com/three@0.128.0/examples/js/utils/BufferGeometryUtils.js"><\/script>')</script>
+<script src="js/discord.js"></script>
+<script src="js/main.js"></script>
+<script>
+/* Menú de capas plegable en móvil (en escritorio el panel siempre está visible) */
+(function(){
+  var b=document.getElementById('ptoggle'),p=document.getElementById('panel'),c=document.getElementById('c');
+  if(!b||!p)return;
+  function set(o){p.classList.toggle('open',o);b.setAttribute('aria-expanded',o);}
+  b.addEventListener('click',function(){set(!p.classList.contains('open'));});
+  c.addEventListener('pointerdown',function(){set(false);});
+  addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+})();
+</script>
+</body>
+</html>
