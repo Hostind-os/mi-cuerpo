@@ -1,0 +1,12 @@
+{
+  "name": "mi-yo-3d",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Panel anatómico 3D interactivo con mensajes para Discord.",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "engines": {
+    "node": ">=18.17"
+  }
+}

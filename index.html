@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Un recorrido 3D personal e interactivo, con un mensaje escondido en el corazón y en la mente.">
+<meta name="theme-color" content="#2b1b22">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%97%3C/text%3E%3C/svg%3E">
+<title>Mi yo para que no te estreses</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Mi yo para que no te estreses</h1>
+  <p class="sub">Arrastra para girar, usa la rueda o los dedos para acercar, y toca el cerebro y el corazón.</p>
+</header>
+<main id="stage">
+  <canvas id="c" aria-label="Modelo anatómico 3D interactivo"></canvas>
+  <div id="hearts" aria-hidden="true"></div>
+  <div id="dock">
+    <nav id="chips" aria-label="Capas visibles">
+      <button data-s="body" aria-pressed="true" style="--d:#f4c6b8"><i></i>Cuerpo</button>
+      <button data-s="bone" aria-pressed="true" style="--d:#eadfcf"><i></i>Esqueleto</button>
+      <button data-s="nerv" aria-pressed="true" style="--d:#f1dca0"><i></i>Sistema Nervioso</button>
+      <button data-s="vasc" aria-pressed="true" style="--d:#d3263b"><i></i>Circulatorio</button>
+    </nav>
+    <form id="msgbar" autocomplete="off">
+      <input id="msg" type="text" maxlength="1500" placeholder="Escríbeme algo bonito…" aria-label="Mensaje">
+      <button type="submit" id="send">Enviar</button>
+    </form>
+    <p id="status" role="status" aria-live="polite"></p>
+  </div>
+</main>
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="mt" hidden>
+  <div class="mcard"><h2 id="mt"></h2><p id="mp"></p><button id="mx" type="button">Cerrar</button></div>
+</div>
+<!-- Librerías de Three.js r128, en este orden. Si una CDN falla, se carga la de respaldo. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>window.THREE||document.write('<script src="https://unpkg.com/three@0.128.0/build/three.min.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>(window.THREE&&THREE.OrbitControls)||document.write('<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>(window.THREE&&THREE.GLTFLoader)||document.write('<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/BufferGeometryUtils.js"></script>
+<script>(window.THREE&&THREE.BufferGeometryUtils)||document.write('<script src="https://unpkg.com/three@0.128.0/examples/js/utils/BufferGeometryUtils.js"><\/script>')</script>
+<script src="script.js"></script>
+</body>
+</html>

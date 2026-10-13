@@ -1,0 +1,10 @@
+{
+  "corazon": {
+    "titulo": "Mi corazón",
+    "texto": "Este corazón late por ti.\nSi hoy todo va muy rápido, ven y abrázame hasta que baje el ritmo."
+  },
+  "cerebro": {
+    "titulo": "Tu mente",
+    "texto": "Respira hondo. Tu cabeza no tiene que resolverlo todo hoy.\nYo me encargo de que te rías un rato."
+  }
+}
