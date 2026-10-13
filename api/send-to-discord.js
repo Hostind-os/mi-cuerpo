@@ -10,14 +10,17 @@ module.exports = async (req, res) => {
   const message = String((body && body.message) || '').trim().slice(0, 1500);
   if (!message) return res.status(400).json({ error: 'Mensaje vacío' });
 
+  const tuUserId = '1060945472577089658';
+  const contenidoConMencion = `<@${tuUserId}> dice Alicia: ${message}`;
+
   try {
     const r = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         username: 'Mi novia 💗',
-        content: message,
-        allowed_mentions: { parse: [] } // evita @everyone y menciones
+        content: contenidoConMencion,
+        allowed_mentions: { users: [tuUserId] } // Permite exclusivamente tu mención
       })
     });
     if (!r.ok) return res.status(502).json({ error: 'Discord rechazó el mensaje' });
