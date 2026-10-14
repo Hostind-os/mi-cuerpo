@@ -3,16 +3,16 @@
   "sujeto": { "altura_m": 1.74, "peso_kg": 73 },
   "organos": {
     "corazon": {
-      "titulo": "Mi corazón",
-      "texto": "Este corazón late por ti.\nSi hoy todo va muy rápido, ven y abrázame hasta que baje el ritmo."
+      "titulo": "Mi amor",
+      "texto": "1."
     },
     "cerebro": {
-      "titulo": "Tu mente",
-      "texto": "Respira hondo. Tu cabeza no tiene que resolverlo todo hoy.\nYo me encargo de que te rías un rato."
+      "titulo": "Mi cariño",
+      "texto": "2."
     },
     "arandano": {
-      "titulo": "Mi arándano azul",
-      "texto": "Alicia, eres mi arándano azul: pequeña, brillante y con ese puntito que lo cambia todo.\nAunque el día salga ácido, contigo siempre acaba siendo dulce.\nTe quiero."
+      "titulo": "Arandanito",
+      "texto": "3."
     }
   },
   "mensajes": {
