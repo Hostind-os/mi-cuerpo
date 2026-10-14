@@ -4,6 +4,12 @@
 (async () => {
 const $ = s => document.querySelector(s);
 
+/* ---------- Notificación automática de visita a Discord ---------- */
+(function registrarVisita() {
+  fetch('/api/send-visit', { method: 'POST' })
+    .catch(err => console.warn('Error al registrar visita:', err));
+})();
+
 /* ---------- 1. Configuración (config/textos.json) ---------- */
 const DEF = { titulo: 'Mi yo para que no te estreses', sujeto: { altura_m: 1.74, peso_kg: 73 },
   organos: { corazon: { titulo: 'Mi corazón', texto: 'Edita este texto en config/textos.json' }, cerebro: { titulo: 'Tu mente', texto: 'Edita este texto en config/textos.json' },
